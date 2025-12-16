@@ -1,0 +1,55 @@
+:root{
+  --bg:#f7f7f9;
+  --card:#ffffff;
+  --accent:#0b74de;
+  --text:#222;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background:linear-gradient(180deg,#eef6ff 0%,var(--bg) 100%);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:2rem;
+}
+main{
+  background:var(--card);
+  padding:1.5rem;
+  border-radius:12px;
+  width:320px;
+  box-shadow:0 6px 20px rgba(10,20,40,0.08);
+  text-align:center;
+}
+h1{margin:0 0 1rem;font-size:1.25rem}
+.controls{display:block;margin-bottom:1rem}
+label{display:block;margin-bottom:.5rem;font-size:.9rem}
+input[type="number"]{
+  width:100%;
+  padding:.5rem;
+  border-radius:6px;
+  border:1px solid #ddd;
+  font-size:1rem;
+}
+.quick{margin:0.5rem 0;display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}
+.quick button,
+.buttons button{
+  padding:.5rem .6rem;
+  border-radius:8px;
+  border:1px solid #ddd;
+  background:white;
+  cursor:pointer;
+}
+.buttons{display:flex;gap:.5rem;justify-content:center;margin-top:.4rem}
+button[disabled]{opacity:.6;cursor:not-allowed}
+#startBtn{background:var(--accent);color:white;border:none}
+.display{
+  margin-top:1rem;
+  font-size:2.2rem;
+  font-weight:600;
+  letter-spacing:1px;
+}
+.note{font-size:.85rem;color:#666;margin-top:.75rem}

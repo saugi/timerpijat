@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Timer Pijat Sederhana</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Timer Pijat</h1>
+
+    <div class="controls">
+      <label>
+        Durasi (menit)
+        <input id="minutesInput" type="number" min="0" value="15">
+      </label>
+
+      <div class="quick">
+        <button data-min="5">5m</button>
+        <button data-min="10">10m</button>
+        <button data-min="15">15m</button>
+        <button data-min="30">30m</button>
+      </div>
+
+      <div class="buttons">
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn" disabled>Pause</button>
+        <button id="resetBtn" disabled>Reset</button>
+      </div>
+    </div>
+
+    <div class="display" id="timeDisplay">15:00</div>
+
+    <p class="note">Saat waktu habis akan keluar bunyi dan getar (jika perangkat mendukung).</p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
