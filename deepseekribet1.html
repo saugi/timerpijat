@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4CAF50">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Timer Pijat</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    text-align: center;
+    background-color: #1a1a2e;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: manipulation;
+  }
+
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    width: 100%;
+  }
+
+  h1 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+    font-size: 2.2rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .subtitle {
+    color: #a5d6a7;
+    margin-bottom: 30px;
+    font-size: 1rem;
+  }
+
+  .input-group {
+    margin-bottom: 25px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    color: #e0e0e0;
+  }
+
+  input {
+    font-size: 1.2rem;
+    padding: 15px;
+    width: 100%;
+    max-width: 200px;
+    border: none;
+    border-radius: 10px;
+    background-color: #2d3047;
+    color: white;
+    text-align: center;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+  }
+
+  input:focus {
+    outline: 2px solid #4CAF50;
+  }
+
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+
+  .quick-time-btn {
+    padding: 12px 20px;
+    background-color: #2d3047;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .quick-time-btn:hover, .quick-time-btn:active {
+    background-color: #3a3d5d;
+  }
+
+  .quick-time-btn.active {
+    background-color: #4CAF50;
+    font-weight: bold;
+  }
+
+  .timer-display {
+    font-size: 5rem;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    padding: 16px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+    min-width: 140px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .start-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .start-btn:hover, .start-btn:active {
+    background-color: #388E3C;
+    transform: translateY(-2px);
+  }
+
+  .pause-btn {
+    background-color: #FF9800;
+    color: white;
+  }
+
+  .pause-btn:hover, .pause-btn:active {
+    background-color: #F57C00;
+    transform: translateY(-2px);
+  }
+
+  .reset-btn {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .reset-btn:hover, .reset-btn:active {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+  }
+
+  .fullscreen-btn {
+    background-color: #2196F3;
+    color: white;
+    margin-top: 10px;
+  }
+
+  .fullscreen-btn:hover, .fullscreen-btn:active {
+    background-color: #1976D2;
+    transform: translateY(-2px);
+  }
+
+  .notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .notification.show {
+    opacity: 1;
+  }
+
+  .instructions {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #b0b0b0;
+    text-align: left;
+  }
+
+  .instructions h3 {
+    color: #4CAF50;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .power-save-notice {
+    color: #FFC107;
+    margin-top: 10px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 15px;
+    }
+    
+    .timer-display {
+      font-size: 4rem;
+    }
+    
+    button {
+      padding: 14px 20px;
+      font-size: 1rem;
+      min-width: 120px;
+    }
+    
+    .controls {
+      gap: 10px;
+    }
+  }
+
+  @media (max-height: 700px) {
+    .container {
+      padding: 10px;
+    }
+    
+    .timer-display {
+      font-size: 3.5rem;
+      margin: 10px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>⏱️ Timer Pijat</h1>
+  <p class="subtitle">Atur durasi pijat dan nikmati tanpa gangguan</p>
+  
+  <div class="input-group">
+    <label for="menit">Durasi Pijat (menit)</label>
+    <input type="number" id="menit" placeholder="Contoh: 120" min="1" max="180" value="120">
+  </div>
+  
+  <div class="button-group">
+    <button class="quick-time-btn" data-minutes="60">60 menit</button>
+    <button class="quick-time-btn" data-minutes="90">90 menit</button>
+    <button class="quick-time-btn" data-minutes="120">120 menit</button>
+    <button class="quick-time-btn" data-minutes="150">150 menit</button>
+    <button class="quick-time-btn" data-minutes="180">180 menit</button>
+  </div>
+  
+  <div class="timer-display" id="timer">60:00</div>
+  
+  <div class="controls">
+    <button class="start-btn" onclick="mulai()">Mulai</button>
+    <button class="pause-btn" onclick="jeda()" disabled>Jeda</button>
+    <button class="reset-btn" onclick="reset()">Reset</button>
+  </div>
+  
+  <button class="fullscreen-btn" onclick="toggleFullscreen()">Layar Penuh</button>
+  
+  <div class="instructions">
+    <h3>Cara Penggunaan</h3>
+    <p>1. Masukkan durasi pijat atau pilih waktu cepat</p>
+    <p>2. Tekan "Mulai" untuk memulai timer</p>
+    <p>3. Gunakan "Layar Penuh" untuk pengalaman tanpa gangguan</p>
+    <p>4. Timer akan tetap berjalan meskipun layar dimatikan</p>
+    <p class="power-save-notice">⚠️ Pastikan pengaturan hemat daya di ponsel tidak membatasi browser</p>
+  </div>
+</div>
+
+<div class="notification" id="notification">Waktu pijat selesai!</div>
+
+<script>
+  let interval;
+  let totalDetik = 900; // 15 menit default
+  let waktuSisa = totalDetik;
+  let isRunning = false;
+  let isPaused = false;
+  
+  // Inisialisasi tampilan
+  document.addEventListener('DOMContentLoaded', function() {
+    updateTimerDisplay();
+    setupQuickTimeButtons();
+    
+    // Mencegah layar mati dengan Wake Lock API (jika didukung)
+    requestWakeLock();
+    
+    // Tambahkan event listener untuk visibilitas halaman
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Tambahkan event listener untuk fullscreen
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+  });
+  
+  function setupQuickTimeButtons() {
+    const quickTimeButtons = document.querySelectorAll('.quick-time-btn');
+    quickTimeButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const minutes = parseInt(this.getAttribute('data-minutes'));
+        document.getElementById('menit').value = minutes;
+        
+        // Update tampilan tombol aktif
+        quickTimeButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Update timer display
+        totalDetik = minutes * 60;
+        waktuSisa = totalDetik;
+        updateTimerDisplay();
+      });
+    });
+    
+    // Set tombol 60 menit sebagai aktif secara default
+    document.querySelector('.quick-time-btn[data-minutes="60"]').classList.add('active');
+  }
+  
+  function mulai() {
+    if (isRunning && !isPaused) return;
+    
+    if (!isRunning) {
+      // Ambil nilai dari input
+      const menit = parseInt(document.getElementById('menit').value);
+      if (isNaN(menit) || menit < 1) {
+        showNotification("Masukkan durasi yang valid!", true);
+        return;
+      }
+      
+      totalDetik = menit * 60;
+      waktuSisa = totalDetik;
+    }
+    
+    isRunning = true;
+    isPaused = false;
+    
+    // Update state tombol
+    document.querySelector('.start-btn').disabled = true;
+    document.querySelector('.pause-btn').disabled = false;
+    document.querySelector('.start-btn').textContent = "Berjalan...";
+    
+    // Hentikan interval sebelumnya jika ada
+    clearInterval(interval);
+    
+    // Mulai interval baru
+    interval = setInterval(updateTimer, 1000);
+    
+    // Update tampilan segera
+    updateTimerDisplay();
+    
+    // Minta wake lock agar layar tetap hidup
+    requestWakeLock();
+    
+    showNotification("Timer dimulai!", false);
+  }
+  
+  function jeda() {
+    if (!isRunning) return;
+    
+    if (isPaused) {
+      // Lanjutkan timer
+      isPaused = false;
+      document.querySelector('.pause-btn').textContent = "Jeda";
+      interval = setInterval(updateTimer, 1000);
+      showNotification("Timer dilanjutkan", false);
+    } else {
+      // Jeda timer
+      isPaused = true;
+      clearInterval(interval);
+      document.querySelector('.pause-btn').textContent = "Lanjut";
+      showNotification("Timer dijeda", false);
+    }
+  }
+  
+  function reset() {
+    clearInterval(interval);
+    isRunning = false;
+    isPaused = false;
+    
+    // Reset ke nilai awal
+    waktuSisa = totalDetik;
+    
+    // Update tampilan
+    updateTimerDisplay();
+    
+    // Reset state tombol
+    document.querySelector('.start-btn').disabled = false;
+    document.querySelector('.pause-btn').disabled = true;
+    document.querySelector('.start-btn').textContent = "Mulai";
+    document.querySelector('.pause-btn').textContent = "Jeda";
+    
+    showNotification("Timer direset", false);
+  }
+  
+  function updateTimer() {
+    if (waktuSisa <= 0) {
+      clearInterval(interval);
+      isRunning = false;
+      
+      // Reset state tombol
+      document.querySelector('.start-btn').disabled = false;
+      document.querySelector('.pause-btn').disabled = true;
+      document.querySelector('.start-btn').textContent = "Mulai";
+      
+      // Tampilkan notifikasi dan bunyi
+      showNotification("Waktu pijat selesai!", true);
+      playCompletionSound();
+      
+      // Getarkan ponsel jika didukung
+      vibratePhone();
+      
+      return;
+    }
+    
+    waktuSisa--;
+    updateTimerDisplay();
+  }
+  
+  function updateTimerDisplay() {
+    const menit = Math.floor(waktuSisa / 60);
+    const detik = waktuSisa % 60;
+    
+    document.getElementById('timer').textContent = 
+      String(menit).padStart(2, '0') + ':' + String(detik).padStart(2, '0');
+    
+    // Ubah warna menjadi merah saat waktu hampir habis
+    if (waktuSisa < 60) {
+      document.getElementById('timer').style.color = '#f44336';
+      document.getElementById('timer').style.textShadow = '0 0 10px rgba(244, 67, 54, 0.5)';
+    } else {
+      document.getElementById('timer').style.color = '#4CAF50';
+      document.getElementById('timer').style.textShadow = '0 0 10px rgba(76, 175, 80, 0.5)';
+    }
+  }
+  
+  function showNotification(message, isAlert) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    
+    if (isAlert) {
+      notification.style.backgroundColor = '#f44336';
+    } else {
+      notification.style.backgroundColor = '#4CAF50';
+    }
+    
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3000);
+  }
+  
+  function playCompletionSound() {
+    // Coba gunakan Web Audio API untuk bunyi notifikasi
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 1);
+    } catch (e) {
+      // Fallback ke beep sederhana jika AudioContext tidak didukung
+      console.log("Beep! Waktu pijat selesai!");
+    }
+  }
+  
+  function vibratePhone() {
+    // Getarkan ponsel jika didukung
+    if (navigator.vibrate) {
+      navigator.vibrate([200, 100, 200, 100, 200]);
+    }
+  }
+  
+  async function requestWakeLock() {
+    // Minta wake lock agar layar tetap hidup
+    if ('wakeLock' in navigator) {
+      try {
+        const wakeLock = await navigator.wakeLock.request('screen');
+        
+        // Tangani pelepasan wake lock
+        wakeLock.addEventListener('release', () => {
+          console.log('Wake Lock telah dilepaskan');
+        });
+        
+        // Tangani perubahan visibilitas
+        document.addEventListener('visibilitychange', async () => {
+          if (document.visibilityState === 'visible' && isRunning) {
+            try {
+              await wakeLock.request('screen');
+            } catch (err) {
+              console.log(`Wake Lock gagal: ${err.name}, ${err.message}`);
+            }
+          }
+        });
+      } catch (err) {
+        console.log(`Wake Lock tidak didukung: ${err.message}`);
+      }
+    }
+  }
+  
+  function handleVisibilityChange() {
+    // Jika halaman kembali terlihat dan timer sedang berjalan, pastikan wake lock aktif
+    if (!document.hidden && isRunning && !isPaused) {
+      requestWakeLock();
+    }
+  }
+  
+  function toggleFullscreen() {
+    const elem = document.documentElement;
+    
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      // Masuk ke mode fullscreen
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+      
+      document.querySelector('.fullscreen-btn').textContent = "Keluar Layar Penuh";
+    } else {
+      // Keluar dari mode fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+      
+      document.querySelector('.fullscreen-btn').textContent = "Layar Penuh";
+    }
+  }
+  
+  function handleFullscreenChange() {
+    // Update teks tombol berdasarkan state fullscreen
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      document.querySelector('.fullscreen-btn').textContent = "Layar Penuh";
+    }
+  }
+</script>
+
+</body>
+</html>
